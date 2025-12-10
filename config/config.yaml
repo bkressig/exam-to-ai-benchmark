@@ -1,0 +1,60 @@
+# ==========================================
+# Path Configuration
+# ==========================================
+# Define the absolute paths for data storage.
+raw_data_dir: "/home/shared_data/data/raw"
+processed_data_dir: "/home/shared_data/data/processed"
+benchmarked_data_dir: "/home/shared_data/data/benchmarked"
+eval_data_dir: "/home/shared_data/data/eval"
+
+# ==========================================
+# 1. Processing Configuration
+# ==========================================
+# Settings for converting raw PDF exams into structured JSON.
+processing:
+  professions: ["..."]  # List of profession folder names to process
+  exam_numbers: ["1"]  # List of exam numbers (folder names) to process, or "all"
+  processing_model: "google/gemini-3-pro-preview"  # LLM model for structuring exam data
+
+# ==========================================
+# 2. Standard Benchmarking Configuration
+# ==========================================
+# Settings for running models WITHOUT RAG (Standard Generation).
+benchmarking:
+  professions: ["..."]
+  exam_numbers: "all" # List of exam numbers to benchmark, or "all"
+  # List of models to benchmark. Ensure SWISSAI_API_KEY is set for Apertus models.
+  models: ["openai/gpt-5.1", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "google/gemini-3-pro-preview", "google/gemini-2.5-flash", "qwen/qwen3-235b-a22b-thinking-2507", "qwen/qwen3-30b-a3b", "qwen/qwen3-8b", "swiss-ai/Apertus-70B-Instruct-2509", "swiss-ai/Apertus-8B-Instruct-2509"]
+  judges: ["google/gemini-2.5-flash"]  # models which judge the solutions
+  num_judge_runs: 3  # Number of times to run each judge on the same exam
+
+# ==========================================
+# 3. RAG Benchmarking Configuration
+# ==========================================
+# Settings for running models WITH RAG (Retrieval-Augmented Generation).
+benchmarking_rag:
+  professions: ["..."]
+  rag_database: "..." # Name of the RAG database folder to use
+  exam_numbers: "all"
+  # List of models to benchmark with RAG. DO NOT add "_rag" suffix here.
+  models: ["openai/gpt-5.1", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "google/gemini-3-pro-preview", "google/gemini-2.5-flash", "qwen/qwen3-235b-a22b-thinking-2507", "qwen/qwen3-30b-a3b", "qwen/qwen3-8b", "swiss-ai/Apertus-70B-Instruct-2509", "swiss-ai/Apertus-8B-Instruct-2509"]
+  judges: ["google/gemini-2.5-flash"]
+  num_judge_runs: 3
+  rag_parameters:
+    top_k:  3 
+    chunk_size: 2048
+    embedding_model: "Qwen/Qwen3-Embedding-0.6B"
+
+# ==========================================
+# 4. Evaluation Configuration
+# ==========================================
+# Settings for generating comparison plots and statistics.
+evaluation:
+  professions: ["..."]  # List of profession folder names to evaluate
+  exam_numbers: 'all'  # List of exam numbers to evaluate, or "all"
+  # List of models to include in the plots. Append "_rag" for RAG runs.
+  models: ["openai/gpt-5.1", "openai/gpt-5.1_rag", "openai/gpt-oss-120b", "openai/gpt-oss-120b_rag", "openai/gpt-oss-20b", "openai/gpt-oss-20b_rag", "google/gemini-3-pro-preview", "google/gemini-3-pro-preview_rag", "google/gemini-2.5-flash", "google/gemini-2.5-flash_rag", "qwen/qwen3-235b-a22b-thinking-2507", "qwen/qwen3-235b-a22b-thinking-2507_rag", "qwen/qwen3-30b-a3b", "qwen/qwen3-30b-a3b_rag", "qwen/qwen3-8b", "qwen/qwen3-8b_rag", "swiss-ai/Apertus-70B-Instruct-2509", "swiss-ai/Apertus-70B-Instruct-2509_rag", "swiss-ai/Apertus-8B-Instruct-2509", "swiss-ai/Apertus-8B-Instruct-2509_rag"]
+  judges: ["google/gemini-2.5-flash"]  # Judges to aggregate over (if multiple, results are averaged)
+  plot_title: 'first test during 1st run'  # Optional custom title for plot. If null, auto-generated based on exam info
+  use_latest_timestamp: true  # If true, use latest benchmarking run for each exam. If false, you can specify timestamps manually
+
