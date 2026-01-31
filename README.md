@@ -1,7 +1,5 @@
 # Exam to AI Benchmark
 
-**Data Science Lab Fall 2025 @ ETH Zurich**
-
 A pipeline for converting PDF exams into structured AI benchmarks, evaluating LLM performance, and visualizing results.
 
 ## Key Features
